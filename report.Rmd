@@ -1,0 +1,65 @@
+---
+title: "Data on air pollution registered in Czech Republic in the period from 2013 to 2019"
+output: word_document
+params:
+  AirPollutant: NA
+  Aggregation: NA
+  X_axis: NA
+  selected_stations: NA
+  thresholds: NA
+  plot: NA
+  stationmap: NA
+  table: NA
+  
+
+---
+# Registration of `r params$AirPollutant` has been performed on the stations below:
+
+```{r include=FALSE}
+library(knitr)
+library(webshot)
+```
+
+
+```{r echo=FALSE, results='asis'}
+cat(paste('*', params$selected_stations), sep = '\n')
+```
+
+# Stations are located here
+```{r echo=FALSE, fig.height=7.5, fig.width=7.5}
+#Plotting the map works pretty well on local servier, however it does not when deployed on Server.
+#I tried several ways to solve it but with no result.
+params$stationmap
+```
+
+
+# Chart of concentration of `r params$AirPollutant` in the atmosphere.
+
+## Parameters of the chart:
+
+* Level of aggregation: `r params$Aggregation`
+* Type of presentation of time axis: `r params$X_axis`
+
+```{r echo=FALSE, fig.width=9, warning=FALSE}
+params$plot
+```
+
+
+### Concentrations of the pollutant (yearly/daily/hourly averages where applicable) that are considered safe in accordance with EU air quality standards (mu*g/m^3^):
+
+```{r echo=FALSE}
+tb <- params$thresholds %>% 
+  dplyr::filter(AirPollutant == params$AirPollutant)
+knitr::kable(tb)
+
+```
+
+
+# Below are the first 5 rows of the table with concentration data. Full table can be downloaded from ShinyApp in CSV format.
+
+```{r echo=FALSE}
+knitr::kable(head(params$table))
+```
+
+
+
